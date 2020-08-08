@@ -111,10 +111,11 @@
   # Install Plugins
   - name: Run `wp plugin install`
     command: |
-      wp plugin install {{ item }}
+      wp plugin install {{ item.name if item is mapping else item }}
       --activate
       --path={{ path }}
       --force
+      {% if item is mapping and 'version' in item %}--version={{ item.version }}{% endif %}
     with_items: "{{ vccw.plugins | default([]) }}"
 
   # Install wp-multibyte-patch
